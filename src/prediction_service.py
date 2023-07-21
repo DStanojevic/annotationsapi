@@ -7,10 +7,10 @@ from dtos import Square, Point
 
 def predict_annotation(predictor: SamPredictor, box: Square) -> Optional[np.ndarray]:
     input_box = _get_box(box)
-    masks, scores, logits = predictor.predict(box=input_box,
-                                      multimask_output=False, )
+    masks, scores, logits = predictor.predict(box=input_box, multimask_output=True)
     index = np.argmax(scores)
-    return _binary_mask_to_polyline(masks[index])
+    mask = masks[index]
+    return _binary_mask_to_polyline(mask)
 
 
 def _get_box(box: Square) -> np.ndarray:
@@ -19,7 +19,8 @@ def _get_box(box: Square) -> np.ndarray:
 
 def _binary_mask_to_polyline(binary_mask: np.ndarray):
     # find the contours in the binary mask
-    contours, t1 = cv2.findContours(binary_mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    converted_mask = (binary_mask * 255).astype(np.uint8)
+    contours, t1 = cv2.findContours(converted_mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
     polylines = []
     for contour in contours:

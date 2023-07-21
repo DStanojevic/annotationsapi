@@ -42,7 +42,7 @@ def _set_current_image(image_id: str):
 
 def _get_current_image():
     global current_image_id
-    current_image_id;
+    current_image_id
 
 
 @app.get("/")
@@ -61,6 +61,7 @@ def get_image(image_id: str):
     raise HTTPException(status_code=404, detail=f'Image with ID: {image_id} does not exists.')
 
 
+@app.post("/images/{image_id}/annotate")
 def annotate(image_id: str, input_box: Square):
     if image_id != current_image_id:
         raise HTTPException(
@@ -72,18 +73,17 @@ def annotate(image_id: str, input_box: Square):
 
 
 if __name__ == "__main__":
-    # uvicorn.run(app, host="0.0.0.0", port=8000)
-    input = {
-        'topLeft': {
-            'x': 1175,
-            'y': 296
-        },
-        'bottomRight': {
-            'x': 1242,
-            'y': 379
-        }
-    }
-    in_box = Square(**input)
-    _ = get_image('img1')
-    res = annotate('img1', in_box)
-    pass
+    uvicorn.run(app, host="0.0.0.0", port=8000)
+    # input = {
+    #     'topLeft': {
+    #         'x': 1175,
+    #         'y': 296
+    #     },
+    #     'bottomRight': {
+    #         'x': 1242,
+    #         'y': 379
+    #     }
+    # }
+    # in_box = Square(**input)
+    # _ = get_image('img1')
+    # res = annotate('img1', in_box)
