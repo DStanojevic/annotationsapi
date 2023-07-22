@@ -5,6 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 import torch
 from segment_anything import sam_model_registry, SamPredictor
 
+from utils import time_it
 from dtos import Square
 import imagerepo
 from prediction_service import predict_annotation
@@ -23,7 +24,6 @@ app = FastAPI()
 
 origins = [
     "http://localhost:4200",  # Angular, React, Vue.js development server
-    "http://localhost:4200/",
 ]
 
 app.add_middleware(
@@ -50,6 +50,7 @@ async def root():
     return {"message": "Hello World"}
 
 
+@time_it
 @app.get("/images/{image_id}")
 def get_image(image_id: str):
     image_data = imagerepo.get_image(image_id)
