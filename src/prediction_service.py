@@ -7,7 +7,7 @@ from dtos import Square, Point
 
 def predict_annotation(predictor: SamPredictor, box: Square) -> Optional[np.ndarray]:
     input_box = _get_box(box)
-    masks, scores, logits = predictor.predict(box=input_box, multimask_output=True)
+    masks, scores, logits = predictor.predict(box=input_box, multimask_output=False)
     index = np.argmax(scores)
     mask = masks[index]
     return _binary_mask_to_polyline(mask)
